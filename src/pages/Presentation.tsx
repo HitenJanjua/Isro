@@ -508,9 +508,7 @@ const Presentation = () => {
           <p className="text-gray-400 text-sm mb-2">
             Use arrow keys, navigation buttons, or click the slide indicators to control the presentation.
           </p>
-          <p className="text-gray-500 text-xs">
-            Add your slide images to the <code className="text-cyan-400">public/slides/</code> folder and update the image paths in the component.
-          </p>
+          
         </div>
       </div>
     </div>
