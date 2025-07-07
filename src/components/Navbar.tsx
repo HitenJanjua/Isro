@@ -33,7 +33,7 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Satellite className="h-8 w-8 text-cyan-400" />
             <span className="text-xl font-bold text-white">
-              Aditya-L1 Research
+              Team Surya Kiran
             </span>
           </Link>
 

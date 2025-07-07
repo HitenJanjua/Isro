@@ -27,7 +27,7 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Satellite className="h-8 w-8 text-cyan-400" />
-              <span className="text-2xl font-bold">Aditya-L1 Research</span>
+              <span className="text-2xl font-bold">Team Surya Kiran</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
               Advanced research project focused on identifying Halo CME events using particle data 

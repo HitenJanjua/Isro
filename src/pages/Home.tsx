@@ -10,7 +10,7 @@ const Home = () => {
       <Hero />
       <Services />
       <Stats />
-      <CTA />
+      {/* <CTA /> */}
     </div>
   );
 };

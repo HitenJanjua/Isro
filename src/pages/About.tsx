@@ -78,20 +78,27 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
+
+              
               <h2 className="text-4xl font-bold text-white mb-6">
-                Research <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Overview</span>
+                What is <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">CME?</span>
               </h2>
               <p className="text-lg text-gray-300 mb-6">
-                Our Sun drives the particle flux in the interplanetary medium and significantly affects 
-                our near-Earth environment. Sudden changes in particle flux can result in significant 
-                disturbances in the upper atmosphere, potentially causing major losses to space assets.
+              A Coronal Mass Ejection (CME) is a massive burst of solar wind and magnetic 
+              fields rising above the solar corona or being released into space. 
+              CMEs often accompany solar flares and other forms of solar activity like sunspots.
               </p>
+
+
+              <h2 className="text-4xl font-bold text-white mb-6">
+                What Happens <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">During a CME?</span>
+              </h2>
               <p className="text-lg text-gray-300 mb-6">
-                This research project focuses on developing an early warning system based on particle 
-                measurements carried out at the L1 Lagrange point, approximately 1.5 million kilometers 
-                from Earth, before these particles reach our planet.
+              The Sun ejects billions of tons of plasma (charged particles like electrons and protons) into space.
+              This ejected material travels through the solar system at speeds ranging from 250 to 3,000 km/s.
+              CMEs can take 1 to 3 days to reach Earth, depending on their speed.
               </p>
-              <div className="grid grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20">
                   <div className="text-2xl font-bold text-cyan-400">L1 Point</div>
                   <div className="text-sm text-gray-400">Observation Location</div>
@@ -100,7 +107,7 @@ const About = () => {
                   <div className="text-2xl font-bold text-purple-400">SWIS-ASPEX</div>
                   <div className="text-sm text-gray-400">Instrument Payload</div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl p-8 text-center border border-purple-500/20">
               <div className="text-6xl mb-4">🛰️</div>
