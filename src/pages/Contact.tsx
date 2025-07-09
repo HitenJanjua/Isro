@@ -76,7 +76,8 @@ const Contact = () => {
       icon: Mail,
       title: 'Research Email',
       info: 'teamsuryakiran.nitj@gmail.com',
-      description: 'Send us your research inquiries!'
+      description: 'Send us your research inquiries!',
+      link: 'mailto:teamsuryakiran.nitj@gmail.com'
     },
     // {
     //   icon: Phone,
@@ -88,7 +89,8 @@ const Contact = () => {
       icon: MapPin,
       title: 'Our University',
       info: 'Dr B R Ambedkar National Institute of Technology Jalandhar',
-      description: 'Visit our University'
+      description: 'Visit our University website',
+      link: 'https://www.nitj.ac.in'
     },
     // {
     //   icon: Clock,
@@ -378,7 +380,9 @@ const Contact = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {contactInfo.map((info, index) => (
-                  <div key={index} className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6 hover:border-cyan-400/40 hover:shadow-cyan-500/25 transition-all duration-300 hover:-translate-y-2">
+                  
+                  <div  className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6 hover:border-cyan-400/40 hover:shadow-cyan-500/25 transition-all duration-300 hover:-translate-y-2">
+                    <a key={index} href={info.link}>
                     <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-lg mb-4">
                       <info.icon className="h-6 w-6 text-cyan-400" />
                     </div>
@@ -391,7 +395,9 @@ const Contact = () => {
                     <p className="text-sm text-gray-400">
                       {info.description}
                     </p>
+                    </a>
                   </div>
+                  
                 ))}
               </div>
 
