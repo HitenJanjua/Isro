@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, Satellite, CheckCircle, X, AlertCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, Satellite, CheckCircle, X, AlertCircle, Linkedin } from 'lucide-react';
+import { useHref } from 'react-router-dom';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -28,13 +29,13 @@ const Contact = () => {
       if (response.ok) {
         const result = await response.json();
         console.log('Form submitted successfully:', result);
-        
+
         // Show success popup
         setShowSuccessPopup(true);
-        
+
         // Reset form
         setFormData({ name: '', email: '', company: '', message: '' });
-        
+
         // Auto-hide popup after 5 seconds
         setTimeout(() => {
           setShowSuccessPopup(false);
@@ -45,7 +46,7 @@ const Contact = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setShowErrorPopup(true);
-      
+
       // Auto-hide error popup after 5 seconds
       setTimeout(() => {
         setShowErrorPopup(false);
@@ -74,28 +75,63 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Research Email',
-      info: 'research@aditya-l1.space',
+      info: 'teamsuryakiran.nitj@gmail.com',
       description: 'Send us your research inquiries!'
     },
-    {
-      icon: Phone,
-      title: 'Research Hotline',
-      info: '+91 (80) ADITYA-L1',
-      description: 'Mon-Fri from 9am to 6pm (IST)'
-    },
+    // {
+    //   icon: Phone,
+    //   title: 'Research Hotline',
+    //   info: '+91 (80) ADITYA-L1',
+    //   description: 'Mon-Fri from 9am to 6pm (IST)'
+    // },
     {
       icon: MapPin,
-      title: 'Research Center',
-      info: 'ISRO Satellite Centre, Bangalore',
-      description: 'Visit our research facility'
+      title: 'Our University',
+      info: 'Dr B R Ambedkar National Institute of Technology Jalandhar',
+      description: 'Visit our University'
+    },
+    // {
+    //   icon: Clock,
+    //   title: 'Data Availability',
+    //   info: 'August 2024 onwards',
+    //   description: 'SWIS Level-2 data from ISSDC'
+    // }
+  ];
+
+  const Person = [
+    {
+      name: 'Bhavya Goyal',
+      info: 'Team Leader',
+      description: 'hello world!',
+      plink: "https://www.linkedin.com/in/martianbhavya",
+      img: 'public/pimg/bhavya.jpeg'
     },
     {
-      icon: Clock,
-      title: 'Data Availability',
-      info: 'August 2024 onwards',
-      description: 'SWIS Level-2 data from ISSDC'
+      name: 'Krrish Baghla',
+      info: 'Team member-1',
+      description: 'hello world!',
+      plink: 'https://www.linkedin.com/in/krrish-baghla-860523314/',
+      img: 'public/pimg/krrish.jpeg'
+    },
+    {
+      name: 'Harshita',
+      info: 'Team member-2',
+      description: 'hello world!',
+      plink: 'https://www.linkedin.com/in/harshita-kapur-764623320',
+      img: 'public/pimg/images.png'
+    },
+    {
+      name: 'Hiten Janjua',
+      info: 'Team member-3',
+      description: 'hello world!',
+      plink: "https://www.linkedin.com/in/hiten-janjua-b71534325/",
+      img: 'public/pimg/hiten.jpeg'
     }
-  ];
+  ]
+
+
+
+
 
   return (
     <div className="pt-16 bg-gray-900">
@@ -111,28 +147,28 @@ const Contact = () => {
               >
                 <X className="h-5 w-5" />
               </button>
-              
+
               {/* Success icon */}
               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500/20 to-cyan-500/20 rounded-full mx-auto mb-4">
                 <CheckCircle className="h-8 w-8 text-green-400" />
               </div>
-              
+
               {/* Success message */}
               <h3 className="text-2xl font-bold text-white mb-2">
                 Message <span className="text-green-400">Received!</span>
               </h3>
               <p className="text-gray-300 mb-6">
-                Your research inquiry has been successfully submitted. 
+                Your research inquiry has been successfully submitted.
                 Our team will respond within 24 hours!
               </p>
-              
+
               {/* Cosmic elements */}
               <div className="flex justify-center space-x-2 mb-6">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
                 <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
               </div>
-              
+
               {/* Close button */}
               <button
                 onClick={closeSuccessPopup}
@@ -157,12 +193,12 @@ const Contact = () => {
               >
                 <X className="h-5 w-5" />
               </button>
-              
+
               {/* Error icon */}
               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-full mx-auto mb-4">
                 <AlertCircle className="h-8 w-8 text-red-400" />
               </div>
-              
+
               {/* Error message */}
               <h3 className="text-2xl font-bold text-white mb-2">
                 Transmission <span className="text-red-400">Failed!</span>
@@ -171,7 +207,7 @@ const Contact = () => {
                 Unable to submit your message. Please check your connection and try again.
                 Make sure the backend server is running.
               </p>
-              
+
               {/* Close button */}
               <button
                 onClick={closeErrorPopup}
@@ -206,10 +242,10 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <Satellite className="h-16 w-16 text-cyan-400 mx-auto mb-6 animate-bounce" />
           <h1 className="text-5xl font-bold text-white mb-6">
-            Contact <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Research Team</span>
+            Contact <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Team Surya Kiran</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Interested in collaborating on space weather research? Have questions about our CME detection methodology? 
+            Interested in collaborating on space weather research? Have questions about our CME detection methodology?
             We'd love to hear from fellow researchers and space science enthusiasts.
           </p>
         </div>
@@ -274,7 +310,7 @@ const Contact = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
                     Institution/Organization (Optional)
@@ -290,7 +326,7 @@ const Contact = () => {
                     placeholder="Your Research Institution"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
                     Research Inquiry
@@ -307,7 +343,7 @@ const Contact = () => {
                     placeholder="Tell us about your research interests, collaboration ideas, or questions about our CME detection methodology..."
                   />
                 </div>
-                
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -332,10 +368,10 @@ const Contact = () => {
             <div className="space-y-8">
               <div>
                 <h2 className="text-3xl font-bold text-white mb-6">
-                  <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Research</span> Contact Information
+                  <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Contact</span> Information
                 </h2>
                 <p className="text-gray-300 mb-8">
-                  We welcome collaboration opportunities, data sharing requests, and discussions 
+                  We welcome collaboration opportunities, data sharing requests, and discussions
                   about space weather research methodologies and findings.
                 </p>
               </div>
@@ -360,7 +396,7 @@ const Contact = () => {
               </div>
 
               {/* Research FAQ Section */}
-              <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-8">
+              {/* <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-8">
                 <h3 className="text-2xl font-bold text-white mb-6">
                   Frequently Asked <span className="text-cyan-400">Research Questions</span>
                 </h3>
@@ -390,8 +426,33 @@ const Contact = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
+
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 my-10">
+            {Person.map((person, index) => (
+              <a key={index} href={person.plink}>
+
+                <div className="relative bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6 hover:border-cyan-400/40 hover:shadow-cyan-500/25 transition-all duration-300 hover:-translate-y-2">
+                  <div className="absolute top-4 right-4 text-gray-400 hover:text-cyan-400 transition-colors">
+                    <Linkedin className="h-6 w-6" />
+                  </div>
+
+                  <div className="flex items-center justify-center w-24 h-24 bg-gradient-to-br from-cyan-500/20 to-purple-500/20  mb-4 rounded-full">
+                    <img src={person.img} className="h-20 w-20 rounded-full " />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2 col-span-2">
+                    {person.name}
+                  </h3>
+                  <p className="text-cyan-400 font-medium mb-1">
+                    {person.info}
+                  </p>
+                  
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>

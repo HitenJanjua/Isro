@@ -34,7 +34,7 @@ const Footer = () => {
               from the SWIS-ASPEX payload onboard India's Aditya-L1 solar observatory mission.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              {/* <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 <Github className="h-6 w-6" />
               </a>
               <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
@@ -42,8 +42,8 @@ const Footer = () => {
               </a>
               <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 <Linkedin className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              </a> */}
+              <a href="mailto:teamsuryakiran.nitj@gmail.com" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 <Mail className="h-6 w-6" />
               </a>
             </div>
