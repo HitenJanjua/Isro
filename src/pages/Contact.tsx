@@ -104,28 +104,28 @@ const Contact = () => {
       info: 'Team Leader',
       description: 'hello world!',
       plink: "https://www.linkedin.com/in/martianbhavya",
-      img: 'public/pimg/bhavya.jpeg'
+      img: '/pimg/bhavya.jpeg'
     },
     {
       name: 'Krrish Baghla',
       info: 'Team member-1',
       description: 'hello world!',
       plink: 'https://www.linkedin.com/in/krrish-baghla-860523314/',
-      img: 'public/pimg/krrish.jpeg'
+      img: '/pimg/krrish.jpeg'
     },
     {
       name: 'Harshita',
       info: 'Team member-2',
       description: 'hello world!',
       plink: 'https://www.linkedin.com/in/harshita-kapur-764623320',
-      img: 'public/pimg/images.png'
+      img: '/pimg/images.png'
     },
     {
       name: 'Hiten Janjua',
       info: 'Team member-3',
       description: 'hello world!',
       plink: "https://www.linkedin.com/in/hiten-janjua-b71534325/",
-      img: 'public/pimg/hiten.jpeg'
+      img: '/pimg/hiten.jpeg'
     }
   ]
 
