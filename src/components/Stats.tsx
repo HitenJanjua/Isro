@@ -4,7 +4,7 @@ const Stats = () => {
   const stats = [
     { number: '24/7', label: 'Continuous Monitoring' },
     { number: '1.5M km', label: 'Distance from Earth (L1)' },
-    { number: '98%', label: 'Detection Accuracy' },
+    { number: '94.2%', label: 'Detection Accuracy' },
     { number: 'Aug 2024+', label: 'Data Coverage' },
   ];
 
