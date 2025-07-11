@@ -27,7 +27,8 @@ interface CMEEvent {
 }
 
 interface ModelMetrics {
-  accuracy: number;
+  accuracy: number,
+  detectionRate: number;
   precision: number;
   recall: number;
   f1Score: number;
@@ -44,12 +45,13 @@ const Dashboard = () => {
   // Mock data - replace with actual API calls
   const [modelMetrics, setModelMetrics] = useState<ModelMetrics>({
     accuracy: 94.2,
+    detectionRate: 69.02,
     precision: 91.8,
     recall: 96.5,
-    f1Score: 94.1,
+    f1Score: 88.2,
     lastUpdated: '2024-12-19T10:30:00Z',
-    totalEvents: 847,
-    confirmedEvents: 623
+    totalEvents: 24313,
+    confirmedEvents: 16781
   });
 
   const [recentEvents, setRecentEvents] = useState<CMEEvent[]>([
@@ -210,7 +212,7 @@ const Dashboard = () => {
             <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm">Total Events</p>
+                  <p className="text-gray-400 text-sm">Total ICME Events</p>
                   <p className="text-3xl font-bold text-purple-400">{modelMetrics.totalEvents}</p>
                 </div>
                 <Database className="h-8 w-8 text-purple-400" />
@@ -220,7 +222,7 @@ const Dashboard = () => {
             <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm">Confirmed CMEs</p>
+                  <p className="text-gray-400 text-sm">Confirmed ICMEs</p>
                   <p className="text-3xl font-bold text-green-400">{modelMetrics.confirmedEvents}</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-400" />
@@ -230,8 +232,8 @@ const Dashboard = () => {
             <div className="bg-gradient-to-br from-gray-800/50 to-purple-900/20 backdrop-blur-sm rounded-xl border border-purple-500/20 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm">F1 Score</p>
-                  <p className="text-3xl font-bold text-yellow-400">{modelMetrics.f1Score}%</p>
+                  <p className="text-gray-400 text-sm">Detaction Rate</p>
+                  <p className="text-3xl font-bold text-yellow-400">{modelMetrics.detectionRate}%</p>
                 </div>
                 <BarChart3 className="h-8 w-8 text-yellow-400" />
               </div>
