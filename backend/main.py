@@ -101,7 +101,7 @@ init_database()
 
 @app.get("/")
 async def root():
-    return {"message": "Stellar Labs API - Ready for cosmic transmissions!"}
+    return {"message": "Successfully deployed!"}
 
 @app.get("/api/health")
 async def health_check():
