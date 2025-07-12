@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: aditya-l1-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+  - type: pserv
+    name: aditya-l1-postgres
+    env: docker
+    plan: starter
