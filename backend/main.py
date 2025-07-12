@@ -4,8 +4,6 @@ from pydantic import BaseModel
 import os
 from datetime import datetime
 from typing import Optional
-import joblib
-import numpy as np
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
@@ -50,21 +48,6 @@ class ContactForm(BaseModel):
     company: Optional[str] = None
     message: str
 
-# Pydantic model for ML prediction request
-class PredictionRequest(BaseModel):
-    features: list
-
-# Load joblib model (add this when you upload your model file)
-# MODEL_PATH = "model.joblib"  # Update with your actual model filename
-# try:
-#     model = joblib.load(MODEL_PATH)
-#     print(f"Model loaded successfully from {MODEL_PATH}")
-# except FileNotFoundError:
-#     print(f"Warning: Model file {MODEL_PATH} not found. ML endpoints will not work.")
-#     model = None
-# except Exception as e:
-#     print(f"Error loading model: {e}")
-#     model = None
 # Database dependency
 def get_db():
     db = SessionLocal()
@@ -165,60 +148,40 @@ async def get_contacts_count(db: Session = next(get_db())):
     finally:
         db.close()
 
-@app.post("/api/predict")
-async def make_prediction(request: PredictionRequest):
-    """Make predictions using the loaded joblib model."""
-    # Uncomment and modify this when you add your joblib file
-    # try:
-    #     if model is None:
-    #         raise HTTPException(status_code=503, detail="Model not available")
-    #     
-    #     # Convert input to numpy array
-    #     features = np.array(request.features).reshape(1, -1)
-    #     
-    #     # Make prediction
-    #     prediction = model.predict(features)
-    #     
-    #     return {
-    #         "success": True,
-    #         "prediction": prediction.tolist(),
-    #         "message": "Prediction completed successfully"
-    #     }
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
-    
-    # Temporary response until you add your model
-    return {
-        "success": False,
-        "message": "Model endpoint ready - please upload your joblib file"
-    }
-
-@app.post("/api/refresh-analysis")
-async def refresh_analysis():
-    """Refresh CME analysis using the joblib model."""
-    # This endpoint will run your joblib model when refresh button is clicked
-    # Uncomment and modify when you add your model file
-    # try:
-    #     if model is None:
-    #         raise HTTPException(status_code=503, detail="Model not available")
-    #     
-    #     # Add your model logic here
-    #     # For example, if your model processes CME data:
-    #     # result = model.predict(cme_data)
-    #     
-    #     return {
-    #         "success": True,
-    #         "analysis": "Updated analysis results",
-    #         "timestamp": datetime.now().isoformat()
-    #     }
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Analysis refresh failed: {str(e)}")
-    
-    # Temporary response
+@app.get("/api/mock-data")
+async def get_mock_data():
+    """Return mock CME data for dashboard display."""
     return {
         "success": True,
-        "message": "Analysis refresh endpoint ready - please upload your joblib file",
-        "timestamp": datetime.now().isoformat()
+        "cme_events": [
+            {
+                "id": "CME-2024-001",
+                "timestamp": "2024-12-19T08:45:00Z",
+                "confidence": 0.92,
+                "velocity": 650,
+                "density": 12.5,
+                "temperature": 1.2e5,
+                "status": "detected"
+            },
+            {
+                "id": "CME-2024-002", 
+                "timestamp": "2024-12-19T06:20:00Z",
+                "confidence": 0.87,
+                "velocity": 580,
+                "density": 8.9,
+                "temperature": 9.8e4,
+                "status": "confirmed"
+            }
+        ],
+        "model_metrics": {
+            "accuracy": 94.2,
+            "detection_rate": 69.02,
+            "precision": 91.8,
+            "recall": 96.5,
+            "f1_score": 88.2,
+            "total_events": 24313,
+            "confirmed_events": 16781
+        }
     }
 
 if __name__ == "__main__":
