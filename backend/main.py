@@ -1,17 +1,69 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from typing import Optional, AsyncGenerator
 from datetime import datetime
 import motor.motor_asyncio
 import os
 from dotenv import load_dotenv
-import urllib.parse
+import ssl
+from contextlib import asynccontextmanager
+import logging
 
 # Load environment variables
 load_dotenv()
 
-app = FastAPI()
+# Logging setup
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# MongoDB Configuration
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    raise ValueError("MONGO_URI environment variable is required")
+
+DB_NAME = os.getenv("MONGO_DB_NAME", "contacts_db")
+COLLECTION_NAME = "contacts"
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Lifespan handler for MongoDB connection management"""
+    client = None
+    try:
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+
+        client = motor.motor_asyncio.AsyncIOMotorClient(
+            MONGO_URI,
+            tls=True,
+            tlsAllowInvalidCertificates=True,
+        )
+
+        # Try pinging MongoDB
+        await client.admin.command("ping")
+        logger.info("✅ Successfully connected to MongoDB")
+
+        app.state.mongo_client = client
+
+        # Optional: Create index on created_at
+        db = client[DB_NAME]
+        await db[COLLECTION_NAME].create_index("created_at", background=True)
+
+    except Exception as e:
+        logger.error("❌ Failed to connect to MongoDB: %s", str(e))
+        # Store None if connection fails - routes will need to handle this
+        app.state.mongo_client = None
+        # Continue startup but services will fail when trying to use MongoDB
+
+    yield
+
+    if client:
+        client.close()
+        logger.info("🔒 MongoDB connection closed")
+
+# Initialize FastAPI with lifespan handler
+app = FastAPI(lifespan=lifespan)
 router = APIRouter()
 
 # CORS Configuration
@@ -23,49 +75,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB Configuration - Improved with better error handling
-MONGO_URI = os.getenv("MONGO_URI")
-
-if not MONGO_URI:
-    # Construct URI from components if MONGO_URI not provided directly
-    username = os.getenv("MONGO_USERNAME", "")
-    password = os.getenv("MONGO_PASSWORD", "")
-    cluster = os.getenv("MONGO_CLUSTER", "")
-    db_name = os.getenv("MONGO_DB_NAME", "")
-    
-    if not all([username, password, cluster, db_name]):
-        raise ValueError(
-            "Either MONGO_URI or all of MONGO_USERNAME, MONGO_PASSWORD, "
-            "MONGO_CLUSTER, and MONGO_DB_NAME must be set in environment variables"
-        )
-    
-    # Safely encode password
-    encoded_password = urllib.parse.quote_plus(password)
-    MONGO_URI = (
-        f"mongodb+srv://{username}:{encoded_password}@{cluster}/{db_name}"
-        "?retryWrites=true&w=majority"
-    )
-
-# MongoDB Client with improved error handling
-try:
-    # Update your MongoDB client configuration
-    client = motor.motor_asyncio.AsyncIOMotorClient(
-    MONGO_URI,
-    tls=True,
-    tlsAllowInvalidCertificates=True,  # Bypass certificate validation
-    serverSelectionTimeoutMS=5000
-)
-    db = client.get_database(os.getenv("MONGO_DB_NAME", "contacts_db"))
-    contacts_collection = db["contacts"]
-except Exception as e:
-    raise RuntimeError(f"Failed to connect to MongoDB: {str(e)}")
-
+# ------------------------
 # Pydantic Models
+# ------------------------
+
 class ContactForm(BaseModel):
     name: str = Field(..., min_length=2, max_length=50)
-    email: str = Field(..., pattern=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    email: EmailStr
     company: Optional[str] = Field(None, max_length=50)
-    message: str = Field(..., min_length=5, max_length=1000)
+    message: str = Field(..., min_length=1, max_length=1000)
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -87,46 +105,58 @@ class ContactOut(ContactForm):
         from_attributes=True
     )
 
-# Health Check Endpoint
+# ------------------------
+# Dependency
+# ------------------------
+
+async def get_contacts_collection():
+    if not app.state.mongo_client:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    db = app.state.mongo_client[DB_NAME]
+    return db[COLLECTION_NAME]
+
+# ------------------------
+# Routes
+# ------------------------
+
 @router.get("/api/health")
 async def health_check():
     try:
-        await client.admin.command('ping')
-        return {
-            "status": "healthy",
-            "database": "connected"
-        }
+        if not app.state.mongo_client:
+            return {"status": "unhealthy", "database": "disconnected"}
+        
+        await app.state.mongo_client.admin.command('ping')
+        return {"status": "healthy", "database": "connected"}
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"MongoDB connection failed: {str(e)}"
-        )
+        return {"status": "unhealthy", "database": "error", "detail": str(e)}
 
-# Contact Form Submission
 @router.post("/api/contact", response_model=ContactOut)
-async def submit_contact_form(contact_data: ContactForm):
+async def submit_contact_form(
+    contact_data: ContactForm,
+    contacts_collection=Depends(get_contacts_collection)
+):
     try:
         contact_dict = contact_data.model_dump()
         contact_dict["created_at"] = datetime.utcnow()
-        
+
         result = await contacts_collection.insert_one(contact_dict)
         inserted_contact = await contacts_collection.find_one({"_id": result.inserted_id})
-        
+
         if not inserted_contact:
             raise HTTPException(status_code=500, detail="Failed to retrieve created contact")
-            
+
         inserted_contact["_id"] = str(inserted_contact["_id"])
         return ContactOut(**inserted_contact)
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Failed to process contact form: {str(e)}"
-        )
 
-# Get All Contacts
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to process contact form: {str(e)}")
+
 @router.get("/api/contacts", response_model=list[ContactOut])
-async def get_contacts():
+async def get_contacts(
+    contacts_collection=Depends(get_contacts_collection)
+):
     try:
         contacts = []
         async for doc in contacts_collection.find().sort("created_at", -1):
@@ -134,25 +164,11 @@ async def get_contacts():
             contacts.append(ContactOut(**doc))
         return contacts
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to fetch contacts: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to fetch contacts: {str(e)}")
 
-# Root Endpoint
 @router.get("/")
 async def root():
     return {"message": "Contact API Service"}
 
 # Include router
 app.include_router(router)
-
-# Startup Event
-@app.on_event("startup")
-async def startup_db_client():
-    try:
-        await client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        print(f"Failed to connect to MongoDB: {e}")
-        raise
