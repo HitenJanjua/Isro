@@ -28,18 +28,23 @@ COLLECTION_NAME = "contacts"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Lifespan handler for MongoDB connection management"""
     client = None
     try:
-        client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI,
-        tls=True,
-        tlsCAFile=certifi.where()
+        client = motor.motor_asyncio.AsyncIOMotorClient(
+            MONGO_URI,
+            tls=True,
+            tlsCAFile=certifi.where(),
+            # Add these parameters:
+            connectTimeoutMS=30000,
+            socketTimeoutMS=30000,
+            serverSelectionTimeoutMS=30000,
+            retryWrites=True,
+            # For development only (remove in production):
+            # tlsAllowInvalidCertificates=True
         )
 
-        # Try pinging MongoDB
-        await client.admin.command("ping")
+        await client.admin.command('ping')
         logger.info("✅ Successfully connected to MongoDB")
-
         app.state.mongo_client = client
 
         # Optional: Create index on created_at
