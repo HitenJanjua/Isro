@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env (in dev)
 
 app = FastAPI()
+router = APIRouter()
 
 # CORS setup
 app.add_middleware(
@@ -43,12 +44,12 @@ class ContactOut(ContactForm):
 
 # Routes
 
-@app.get("/")
+@router.get("/")
 async def root():
     return {"message": "Successfully deployed with MongoDB!"}
 
 
-@app.get("/api/health")
+@router.get("/api/health")
 async def health_check():
     try:
         await client.server_info()
@@ -57,7 +58,7 @@ async def health_check():
         raise HTTPException(status_code=500, detail="MongoDB connection failed")
 
 
-@app.post("/api/contact")
+@router.post("/api/contact")
 async def submit_contact_form(contact_data: ContactForm):
     """Store a new contact submission."""
     contact = contact_data.dict()
@@ -71,7 +72,7 @@ async def submit_contact_form(contact_data: ContactForm):
     }
 
 
-@app.get("/api/contacts", response_model=List[ContactOut])
+@router.get("/api/contacts", response_model=List[ContactOut])
 async def get_contacts():
     """Get all contact form submissions."""
     contacts = []
@@ -81,7 +82,7 @@ async def get_contacts():
     return contacts
 
 
-@app.get("/api/contacts/count")
+@router.get("/api/contacts/count")
 async def get_contacts_count():
     count = await contacts_collection.count_documents({})
     return {
