@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import ssl
 from contextlib import asynccontextmanager
 import logging
+import certifi
 
 # Load environment variables
 load_dotenv()
@@ -30,10 +31,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Lifespan handler for MongoDB connection management"""
     client = None
     try:
-        client = motor.motor_asyncio.AsyncIOMotorClient(
-        MONGO_URI,
+        client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI,
         tls=True,
-        tlsAllowInvalidCertificates=True,
+        tlsCAFile=certifi.where()
         )
 
         # Try pinging MongoDB
