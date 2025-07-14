@@ -22,10 +22,10 @@ app.add_middleware(
 )
 
 # MongoDB setup
-MONGO_URI = os.getenv("MONGO_URI")  # set this in your Render environment or .env file
+MONGO_URI = os.getenv("mongodb+srv://hitenjanjua:yO8VTcKRnjZOhO1N@teamsuryakiran.uhd7iae.mongodb.net/contacts_db?retryWrites=true&w=majority&tls=true&appName=teamsuryakiran")  # set this in your Render environment or .env file
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
 db = client.contacts_db
-contacts_collection = db.contacts
+contacts_collection = db["contacts"]
 
 
 # Pydantic models
@@ -90,7 +90,4 @@ async def get_contacts_count():
     }
 
 
-# For local testing
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
