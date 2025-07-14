@@ -92,3 +92,4 @@ async def get_contacts_count():
 
 
 
+app.include_router(router)
