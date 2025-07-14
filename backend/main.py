@@ -29,9 +29,11 @@ load_dotenv()
 # MongoDB setup
 MONGO_DETAILS = os.getenv("MONGO_URI")
 
+# Alternative SSL configuration that often works with Atlas
 client = AsyncIOMotorClient(
     MONGO_DETAILS,
     tls=True,
+    tlsInsecure=False,
     tlsCAFile=certifi.where()
 )
 db = client.contact_db
