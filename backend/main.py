@@ -30,14 +30,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Lifespan handler for MongoDB connection management"""
     client = None
     try:
-        ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
-
         client = motor.motor_asyncio.AsyncIOMotorClient(
-            MONGO_URI,
-            tls=True,
-            tlsAllowInvalidCertificates=True,
+        MONGO_URI,
+        tls=True,
+        tlsAllowInvalidCertificates=True,
         )
 
         # Try pinging MongoDB
