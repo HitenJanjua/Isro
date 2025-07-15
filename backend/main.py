@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-import motor.motor_asyncio
 from dotenv import load_dotenv
 import os
 import logging
@@ -27,7 +26,7 @@ app.add_middleware(
 )
 load_dotenv()
 # MongoDB setup
-MONGO_DETAILS = os.getenv("MONGO_URI")
+MONGO_DETAILS = os.environ.get("MONGO_URI")
 
 # Alternative SSL configuration that often works with Atlas
 client = AsyncIOMotorClient(
