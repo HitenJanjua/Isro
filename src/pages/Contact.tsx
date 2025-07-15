@@ -18,7 +18,7 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://teamsuryakiran.vercel.app/api/contact', {
+      const response = await fetch('https://isro-back.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
