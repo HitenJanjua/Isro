@@ -46,8 +46,12 @@ class ContactForm(BaseModel):
     message: str
 
 @app.get("/")
-def health_check():
-    return{health_check: "OK"}
+async def root():
+    return {"message": "Successfully deployed!"}
+
+@app.get("/api/health")
+async def health_check():
+    return {"status": "healthy", "database": "connected"}
 
 @app.post("/api/contact")
 async def submit_form(data: ContactForm):
