@@ -45,6 +45,10 @@ class ContactForm(BaseModel):
     company: Optional[str] = None
     message: str
 
+@app.get("/")
+def health_check():
+    return{health_check: "OK"}
+
 @app.post("/api/contact")
 async def submit_form(data: ContactForm):
     try:
